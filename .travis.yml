@@ -1,7 +1,23 @@
 language: node_js
 node_js:
   - "node"
+
+script:
+  - set -e
+  - "$TRAVIS_BUILD_DIR/travis/install_gcloud.sh"
+
 deploy:
+# Separate deployments to various places based on branch and push type
+## - sandbox
+  provider: script
+  skip_cleanup: true
+  script: "$TRAVIS_BUILD_DIR/travis/activate_service_account.sh SERVICE_ACCOUNT_mlab_sandbox
+    && gsutil cp -r "$TRAVIS_BUILD_DIR/app/* gs://speed.mlab-sandbox.measurementlab.net/"
+  on:
+    repo: m-lab/website
+    condition: "$TRAVIS_BRANCH == sandbox-* && $TRAVIS_EVENT_TYPE == push"
+
+## - production    
   provider: s3
   access_key_id: AKIAIRWAFHZDDWJ37X5A
   secret_access_key:
