@@ -6,11 +6,14 @@ node_js:
 script:
   - set -e
   - "$TRAVIS_BUILD_DIR/travis/install_gcloud.sh"
+  - npm install -g firebase-tools
+  - gulp inject
+  - gulp copy_libs
 
 deploy:
 # Separate deployments to various places based on branch and push type
 ## - sandbox bucket on gcs
-  provider: script
+- provider: script
   skip_cleanup: true
   script: "$TRAVIS_BUILD_DIR/travis/activate_service_account.sh SERVICE_ACCOUNT_mlab_sandbox
     && gsutil cp -r "$TRAVIS_BUILD_DIR/app/* gs://speed.mlab-sandbox.measurementlab.net/"
@@ -18,14 +21,10 @@ deploy:
     repo: m-lab/mlab-speedtest
     condition: "$TRAVIS_BRANCH == sandbox-* && $TRAVIS_EVENT_TYPE == push"
 
-## - production    
-  provider: s3
-  access_key_id: AKIAIRWAFHZDDWJ37X5A
-  secret_access_key:
-    secure: cScQWz2z+W5z+aK5tT6TMxp8vhIuWlcw4HQT1I3v8OLW6pHaAfPUyChWdfdKXV1itUK9Qt+YkQmCKGvOdYHtijB2xlBYQZJih/2+U7h/I52YbSW617QwGd3A1Jk4/Fym3LwlKcOCUOm7RDTscHipRjZQhGEvF7f1v2oYBdU81Bp3xdNugbjtJHLCi8Jq/9K8uKk8WD7bBj6UGhjK3JJJHJB6F41BpKhnltNAOTi+QtJShsmD25iJfYvyig3VP2fp5a6vvOKX7doKD0AduJm62CoeP65eUCHelN08pNuCI50YjBkkv+9hQ/Y7WnsOzkWjrEgUiNiA9FuhugO2Lvp6UioCk4RkzZY53QMdeFIgxoxZdhEz1wQgJIQ6fxTn3elGqGFCejZe0vMB5DPkK/2kqqqb501IvQf0wmptSt1pT/VfxZmrk2i718SKTdQluaIsKVGZyip6L49kjrlNq/uGqXcMwR4c85o239oGGWyzuWFSWWMPSqnpXScbRVFOzn+pp3Ei8ho5SfaI+N8tO/1/R+9vShtWeLQB7DQ23q1JDja+enNWhBuYshe6rkfb5zZzDy5+kOirCIGsK1V4+elmyIZHmue5xS7tZ7Hc/uXpuJXXGH/qnWglRwkt+ALnv/gGOXvR5+jhXeIadITIJqGqsRa3FzQupq67Pf+sdRbLgpw=
-  bucket: speed-measurementlab-net
+# production
+- provider: script
   skip_cleanup: true
-  local_dir: app
+  script: "firebase use mlab-oti && firebase deploy --only hosting:mlab-speedtest --token $FIREBASE_TOKEN"
   on:
     repo: m-lab/mlab-speedtest
-    branch: master
+    tags: true
