@@ -8,7 +8,7 @@ script:
 
 deploy:
 # Separate deployments to various places based on branch and push type
-## - sandbox
+## - sandbox bucket
   provider: script
   skip_cleanup: true
   script: "$TRAVIS_BUILD_DIR/travis/activate_service_account.sh SERVICE_ACCOUNT_mlab_sandbox
