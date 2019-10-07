@@ -14,7 +14,7 @@ deploy:
   script: "$TRAVIS_BUILD_DIR/travis/activate_service_account.sh SERVICE_ACCOUNT_mlab_sandbox
     && gsutil cp -r "$TRAVIS_BUILD_DIR/app/* gs://speed.mlab-sandbox.measurementlab.net/"
   on:
-    repo: m-lab/website
+    repo: m-lab/mlab-speedtest
     condition: "$TRAVIS_BRANCH == sandbox-* && $TRAVIS_EVENT_TYPE == push"
 
 ## - production    
@@ -26,5 +26,5 @@ deploy:
   skip_cleanup: true
   local_dir: app
   on:
-    repo: opentechinstitute/mlab-speedtest
+    repo: m-lab/mlab-speedtest
     branch: master
