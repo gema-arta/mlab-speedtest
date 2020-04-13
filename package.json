@@ -34,8 +34,5 @@
     "@bower_components/html5-boilerplate": "h5bp/html5-boilerplate#^5.3.0",
     "@bower_components/jquery": "jquery/jquery-dist#3.0.0",
     "@bower_components/skel": "n33/skel#~3.0.1"
-  },
-  "engines": {
-    "yarn": ">= 1.0.0"
   }
 }
